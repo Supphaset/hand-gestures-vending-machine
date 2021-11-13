@@ -6,9 +6,10 @@ def get_database():
     CONNECTION_STRING = 'mongodb+srv://mechatronic:mechatronic@cluster0.el0zv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
     from pymongo import MongoClient
-    client = MongoClient(CONNECTION_STRING,tlsCAFile=certifi.where())
+    client = MongoClient(CONNECTION_STRING, tlsCAFile=certifi.where())
 
     return client['mechatronic']
+
 
 if __name__ == '__main__':
     dbname = get_database()
@@ -34,4 +35,4 @@ if __name__ == '__main__':
         'qty': 3
     }
     collection_name.delete_many({})
-    collection_name.insert_many([item_1,item_2,item_3,item_4,item_5])
+    collection_name.insert_many([item_1, item_2, item_3, item_4, item_5])
