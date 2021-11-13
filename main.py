@@ -44,7 +44,7 @@ def upadate_item(item, db):
 def get_encode():
     encode = {}
     for filename in os.listdir('face_encode'):
-        if filename.endswith(".pikle"):
+        if filename.endswith(".pickle"):
             name = filename.split('.')[0]
             with open(os.path.join('face_encode', filename), 'rb') as f:
                 encode[name] = pickle.load(f)
@@ -53,14 +53,16 @@ def get_encode():
     return encode
 
 
-def compare_face(encode, face, threshold=0.8):
-    name = [encode.keys()]
-    face_encode = [encode.values()]
-    result = face_recognition.compare_faces(
-        face_encode, face)
+def compare_face(encode, face, threshold=0.6):
+    name = list(encode.keys())
+    print(name)
+    face_encode = list(encode.values())
+    result = face_recognition.face_distance(face_encode, face)
+    print(result)
     min_result = min(result)
+    print(min_result)
     if min_result <= threshold:
-        return name[face_encode.index(min_result)]
+        return name[result.index(min_result)]
     else:
         return 'unknown'
 
@@ -130,5 +132,5 @@ def main():
             break
 
 
-if __name__ == '__mian__':
+if __name__ == '__main__':
     main()
