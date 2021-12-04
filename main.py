@@ -73,9 +73,10 @@ def face_recognize(img):
 
 
 def upadate_item(item, db):
-    items = ['Items1', 'Items2', 'Items3', 'Items4', 'Items5']
+    items = ['Item_1', 'Item_2', 'Item_3', 'Item_4', 'Item_5']
     print(item)
     temp = db.find_one({"name": items[item]})
+    print(temp)
     if temp['qty'] > 0:
         motor_1rev(item)
         db.update_one({"name": items[item]}, {'$inc': {'qty': -1, 'used': +1}})
@@ -99,7 +100,7 @@ def compare_face(encode, face, threshold=0.6):
     name = list(encode.keys())
     print(name)
     face_encode = list(encode.values())
-    result = face_recognition.face_distance(face_encode, face)
+    result = list(face_recognition.face_distance(face_encode, face))
     print(result)
     min_result = min(result)
     print(min_result)
@@ -128,7 +129,7 @@ def main():
     dbname = get_database()
     db = dbname['items']
     # define Hand detector and set to detect only 1 hand
-    detector = HandDetector(detectionCon=0.5, maxHands=1)
+    detector = HandDetector(detectionCon=1, maxHands=1)
 
     isListen = False
 
