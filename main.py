@@ -110,10 +110,16 @@ def compare_face(encode, face, threshold=0.6):
 
 
 def main():
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-    camera.framerate = 32
-    rawCapture = PiRGBArray(camera, size=(640, 480))
+    cap = cv2.VideoCapture(0)
+    def change_res(width, height):
+        cap.set(3, width)
+        cap.set(4, height)
+
+    change_res(640, 480)
+    # camera = PiCamera()
+    # camera.resolution = (640, 480)
+    # camera.framerate = 32
+    # rawCapture = PiRGBArray(camera, size=(640, 480))
     time.sleep(0.1)
 
     encode = get_encode()
@@ -126,9 +132,11 @@ def main():
 
     isListen = False
 
-    for frame in camera.capture_continuous(rawCapture, format='bgr', use_video_port=True):
+    # for frame in camera.capture_continuous(rawCapture, format='bgr', use_video_port=True):
         # get image from camera
-        img = frame.array
+        # img = frame.array
+    while True:
+        scuess, img = cap.read()
         hands, img = detector.findHands(img)
         # check if the picture have hand or not
         if hands != []:
@@ -169,7 +177,7 @@ def main():
                     print('Not match')
 
         cv2.imshow("image", img)
-        rawCapture.truncate(0)
+        # rawCapture.truncate(0)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
