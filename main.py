@@ -7,56 +7,13 @@ import time
 import face_recognition
 import pickle
 import os
-import RPi.GPIO as GPIO
-from time import sleep
 import sys
+from rpi_gpio import motor_1rev, set_led
 
-# GPIO Pin
-DIR1 = 0
-DIR2 = 0
-DIR3 = 0
-DIR4 = 0
-DIR5 = 0
-STEP1 = 0
-STEP2 = 0
-STEP3 = 0
-STEP4 = 0
-STEP5 = 0
+
 LED1 = 24
 LED2 = 25
 LED3 = 26
-CW = 1
-CCW = 0
-SPR = 48  # Steps per rev (360/7.5)
-
-# Set GPIO Pin
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(DIR1, GPIO.OUT)
-GPIO.setup(STEP1, GPIO.OUT)
-GPIO.setup(STEP2, GPIO.OUT)
-GPIO.setup(STEP3, GPIO.OUT)
-GPIO.setup(STEP4, GPIO.OUT)
-GPIO.setup(STEP5, GPIO.OUT)
-GPIO.output(DIR1, CW)
-GPIO.output(DIR2, CW)
-GPIO.output(DIR3, CW)
-GPIO.output(DIR4, CW)
-GPIO.output(DIR5, CW)
-GPIO.setup(LED1,GPIO.OUT)
-GPIO.setup(LED2,GPIO.OUT)
-GPIO.setup(LED3,GPIO.OUT)
-
-delay = 0.0208
-
-
-def motor_1rev(step):
-    step_pin = [STEP1, STEP2, STEP3, STEP4, STEP5]
-    for i in range(SPR):
-        GPIO.output(step_pin[step], GPIO.HIGH)
-        sleep(delay)
-        GPIO.output(step_pin[step], GPIO.LOW)
-        sleep(delay)
-
 
 def recognize_face(img, link_enc):
     rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -155,9 +112,9 @@ def main():
             LED1_state = isThumb or isListen
             LED2_state = isFace or isListen
             LED3_state = faceKnown or isListen
-            GPIO.output(LED1,LED1_state)
-            GPIO.output(LED2,LED2_state)
-            GPIO.output(LED3,LED3_state)
+            set_led(LED1,LED1_state)
+            set_led(LED2,LED2_state)
+            set_led(LED3,LED3_state)
             if isListen:  # hand action
                 if finger == [1, 1, 1, 1, 1]:
                     upadate_item(4, db)
@@ -186,7 +143,6 @@ def main():
                         result = compare_face(encode, unknown)
                         if result != 'unknown':
                             faceKnown = True
-                            GPIO.output(LED2,GPIO.HIGH)
                             print(result)
                             print('Is listening')
                             isListen = True
