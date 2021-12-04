@@ -10,7 +10,6 @@ import os
 import sys
 from rpi_gpio import motor_1rev, set_led
 
-
 LED1 = 24
 LED2 = 25
 LED3 = 26

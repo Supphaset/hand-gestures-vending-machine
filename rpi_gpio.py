@@ -6,10 +6,10 @@ STEP11 = 0
 STEP12 = 0
 STEP13 = 0
 STEP14 = 0
-STEP21 = 0
-STEP22 = 0
-STEP23 = 0
-STEP24 = 0
+STEP21 = 2
+STEP22 = 3
+STEP23 = 4
+STEP24 = 14
 STEP31 = 0
 STEP32 = 0
 STEP33 = 0
@@ -104,15 +104,14 @@ steps3 = [STEP31, STEP32, STEP33, STEP34]
 steps4 = [STEP41, STEP42, STEP43, STEP44]
 steps5 = [STEP51, STEP52, STEP53, STEP54]
 
-motor_step_counter = 0
-
 def motor_1rev(step):
+    motor_step_counter = 0
     step_pin = [steps1, steps2, steps3, steps4, steps5]
     for i in range(step_count):
         for pin in range(0,len(step_pin[step])):
             GPIO.output(step_pin[step][pin],step_sequence[motor_step_counter][pin])
-            motor_step_counter = (motor_step_counter-1)%8
-            sleep(delay)
+        motor_step_counter = (motor_step_counter-1)%8
+        sleep(delay)
 
 def set_led(led,state):
     GPIO.output(led,state)
