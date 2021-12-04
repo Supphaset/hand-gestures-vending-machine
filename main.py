@@ -74,7 +74,7 @@ def face_recognize(img):
 
 def upadate_item(item, db):
     items = ['Item_1', 'Item_2', 'Item_3', 'Item_4', 'Item_5']
-    print(item)
+    print(items[item])
     temp = db.find_one({"name": items[item]})
     print(temp)
     if temp['qty'] > 0:
@@ -96,7 +96,7 @@ def get_encode():
     return encode
 
 
-def compare_face(encode, face, threshold=0.6):
+def compare_face(encode, face, threshold=0.5):
     name = list(encode.keys())
     print(name)
     face_encode = list(encode.values())
@@ -129,7 +129,7 @@ def main():
     dbname = get_database()
     db = dbname['items']
     # define Hand detector and set to detect only 1 hand
-    detector = HandDetector(detectionCon=1, maxHands=1)
+    detector = HandDetector(detectionCon=0.5, maxHands=1)
 
     isListen = False
 
