@@ -22,6 +22,9 @@ STEP2 = 0
 STEP3 = 0
 STEP4 = 0
 STEP5 = 0
+LED1 = 0
+LED2 = 0
+LED3 = 0
 CW = 1
 CCW = 0
 SPR = 48  # Steps per rev (360/7.5)
@@ -39,6 +42,9 @@ GPIO.output(DIR2, CW)
 GPIO.output(DIR3, CW)
 GPIO.output(DIR4, CW)
 GPIO.output(DIR5, CW)
+GPIO.setup(LED1,GPIO.OUT)
+GPIO.setup(LED2,GPIO.OUT)
+GPIO.setup(LED3,GPIO.OUT)
 
 delay = 0.0208
 
@@ -132,6 +138,8 @@ def main():
     detector = HandDetector(detectionCon=1, maxHands=1)
 
     isListen = False
+    isFace = False
+    faceKnown = False
 
     # for frame in camera.capture_continuous(rawCapture, format='bgr', use_video_port=True):
         # get image from camera
@@ -143,7 +151,12 @@ def main():
         if hands != []:
             # detect finger in the hand
             finger = detector.fingersUp(hands[0])
-
+            LED1_state = finger == [1, 0, 0, 0, 0] or isListen
+            LED2_state = isFace or isListen
+            LED3_state = faceKnown or isListen
+            GPIO.output(LED1,LED1_state)
+            GPIO.output(LED2,LED2_state)
+            GPIO.output(LED3,LED3_state)
             if isListen:  # hand action
                 if finger == [1, 1, 1, 1, 1]:
                     upadate_item(4, db)
@@ -165,14 +178,19 @@ def main():
                 if finger == [1, 0, 0, 0, 0]:
                     unknown = face_recognize(img)
                     if unknown != []:
+                        isFace = True
                         result = compare_face(encode, unknown)
                         if result != 'unknown':
+                            faceKnown = True
+                            GPIO.output(LED2,GPIO.HIGH)
                             print(result)
                             print('Is listening')
                             isListen = True
                         else:
+                            faceKnown = False
                             print('unknown face')
                     else:
+                        isFace = False
                         print('No face')
                 else:
                     print('Not match')
