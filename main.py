@@ -7,6 +7,49 @@ import time
 import face_recognition
 import pickle
 import os
+import RPi.GPIO as GPIO
+from time import sleep
+import sys
+
+# GPIO Pin
+DIR1 = 0
+DIR2 = 0
+DIR3 = 0
+DIR4 = 0
+DIR5 = 0
+STEP1 = 0
+STEP2 = 0
+STEP3 = 0
+STEP4 = 0
+STEP5 = 0
+CW = 1
+CCW = 0
+SPR = 48  # Steps per rev (360/7.5)
+
+# Set GPIO Pin
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(DIR1, GPIO.OUT)
+GPIO.setup(STEP1, GPIO.OUT)
+GPIO.setup(STEP2, GPIO.OUT)
+GPIO.setup(STEP3, GPIO.OUT)
+GPIO.setup(STEP4, GPIO.OUT)
+GPIO.setup(STEP5, GPIO.OUT)
+GPIO.output(DIR1, CW)
+GPIO.output(DIR2, CW)
+GPIO.output(DIR3, CW)
+GPIO.output(DIR4, CW)
+GPIO.output(DIR5, CW)
+
+delay = 0.0208
+
+
+def motor_1rev(step):
+    step_pin = [STEP1, STEP2, STEP3, STEP4, STEP5]
+    for i in range(SPR):
+        GPIO.output(step_pin[step], GPIO.HIGH)
+        sleep(delay)
+        GPIO.output(step_pin[step], GPIO.LOW)
+        sleep(delay)
 
 
 def recognize_face(img, link_enc):
@@ -30,13 +73,12 @@ def face_recognize(img):
 
 
 def upadate_item(item, db):
+    items = ['Items1', 'Items2', 'Items3', 'Items4', 'Items5']
     print(item)
-    temp = db.find_one({"name": item})
+    temp = db.find_one({"name": items[item]})
     if temp['qty'] > 0:
-        """
-        RPI GPIO CODE
-        """
-        db.update_one({"name": item}, {'$inc': {'qty': -1, 'used': +1}})
+        motor_1rev(item)
+        db.update_one({"name": items[item]}, {'$inc': {'qty': -1, 'used': +1}})
     else:
         print('Item out of stock')
 
@@ -95,19 +137,19 @@ def main():
 
             if isListen:  # hand action
                 if finger == [1, 1, 1, 1, 1]:
-                    upadate_item('Item_5', db)
+                    upadate_item(4, db)
                     isListen = False
                 elif finger == [0, 1, 1, 1, 1]:
-                    upadate_item('Item_4', db)
+                    upadate_item(3, db)
                     isListen = False
                 elif finger == [0, 1, 1, 1, 0]:
-                    upadate_item('Item_3', db)
+                    upadate_item(2, db)
                     isListen = False
                 elif finger == [0, 1, 1, 0, 0]:
-                    upadate_item('Item_2', db)
+                    upadate_item(1, db)
                     isListen = False
                 elif finger == [0, 1, 0, 0, 0]:
-                    upadate_item('Item_1', db)
+                    upadate_item(0, db)
                     isListen = False
             else:
                 # user show thumb up start listening to the hand action
