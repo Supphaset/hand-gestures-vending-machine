@@ -22,9 +22,9 @@ STEP2 = 0
 STEP3 = 0
 STEP4 = 0
 STEP5 = 0
-LED1 = 0
-LED2 = 0
-LED3 = 0
+LED1 = 24
+LED2 = 25
+LED3 = 26
 CW = 1
 CCW = 0
 SPR = 48  # Steps per rev (360/7.5)
@@ -135,7 +135,7 @@ def main():
     dbname = get_database()
     db = dbname['items']
     # define Hand detector and set to detect only 1 hand
-    detector = HandDetector(detectionCon=0.5, maxHands=1)
+    detector = HandDetector(detectionCon=0.8, maxHands=1)
 
     isListen = False
     isFace = False
@@ -151,7 +151,8 @@ def main():
         if hands != []:
             # detect finger in the hand
             finger = detector.fingersUp(hands[0])
-            LED1_state = finger == [1, 0, 0, 0, 0] or isListen
+            isThumb = finger == [1, 0, 0, 0, 0] or finger == [0, 0, 0, 0, 1]
+            LED1_state = isThumb or isListen
             LED2_state = isFace or isListen
             LED3_state = faceKnown or isListen
             GPIO.output(LED1,LED1_state)
@@ -173,9 +174,12 @@ def main():
                 elif finger == [0, 1, 0, 0, 0]:
                     upadate_item(0, db)
                     isListen = False
+                if isListen == False:
+                    isFace = False
+                    faceKnown = False
             else:
                 # user show thumb up start listening to the hand action
-                if finger == [1, 0, 0, 0, 0]:
+                if isThumb:
                     unknown = face_recognize(img)
                     if unknown != []:
                         isFace = True
