@@ -1,13 +1,15 @@
+from pymongo import MongoClient
+import certifi
+
+CONNECTION_STRING = 'mongodb+srv://mechatronic:mechatronic@cluster0.el0zv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+
+'''
+If you run this file all the data in the database will reset.
+'''
+
+
 def get_database():
-    from pymongo import MongoClient
-    import certifi
-    import pymongo
-
-    CONNECTION_STRING = 'mongodb+srv://mechatronic:mechatronic@cluster0.el0zv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-
-    from pymongo import MongoClient
     client = MongoClient(CONNECTION_STRING, tlsCAFile=certifi.where())
-
     return client['mechatronic']
 
 

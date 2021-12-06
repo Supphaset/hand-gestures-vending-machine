@@ -56,47 +56,47 @@ GPIO.setup(STEP52, GPIO.OUT)
 GPIO.setup(STEP53, GPIO.OUT)
 GPIO.setup(STEP54, GPIO.OUT)
 
-GPIO.setup(LED1,GPIO.OUT)
-GPIO.setup(LED2,GPIO.OUT)
-GPIO.setup(LED3,GPIO.OUT)
+GPIO.setup(LED1, GPIO.OUT)
+GPIO.setup(LED2, GPIO.OUT)
+GPIO.setup(LED3, GPIO.OUT)
 
 # defining stepper motor sequence (found in documentation http://www.4tronix.co.uk/arduino/Stepper-Motors.php)
-step_sequence = [[1,0,0,1],
-                 [1,0,0,0],
-                 [1,1,0,0],
-                 [0,1,0,0],
-                 [0,1,1,0],
-                 [0,0,1,0],
-                 [0,0,1,1],
-                 [0,0,0,1]]
+step_sequence = [[1, 0, 0, 1],
+                 [1, 0, 0, 0],
+                 [1, 1, 0, 0],
+                 [0, 1, 0, 0],
+                 [0, 1, 1, 0],
+                 [0, 0, 1, 0],
+                 [0, 0, 1, 1],
+                 [0, 0, 0, 1]]
 
-step_count = 4096 # 5.625*(1/64) per step, 4096 steps is 360°
+step_count = 4096  # 5.625*(1/64) per step, 4096 steps is 360°
 delay = 0.002
 
-GPIO.output( STEP11, GPIO.LOW )
-GPIO.output( STEP12, GPIO.LOW )
-GPIO.output( STEP13, GPIO.LOW )
-GPIO.output( STEP14, GPIO.LOW )
+GPIO.output(STEP11, GPIO.LOW)
+GPIO.output(STEP12, GPIO.LOW)
+GPIO.output(STEP13, GPIO.LOW)
+GPIO.output(STEP14, GPIO.LOW)
 
-GPIO.output( STEP21, GPIO.LOW )
-GPIO.output( STEP22, GPIO.LOW )
-GPIO.output( STEP23, GPIO.LOW )
-GPIO.output( STEP24, GPIO.LOW )
+GPIO.output(STEP21, GPIO.LOW)
+GPIO.output(STEP22, GPIO.LOW)
+GPIO.output(STEP23, GPIO.LOW)
+GPIO.output(STEP24, GPIO.LOW)
 
-GPIO.output( STEP31, GPIO.LOW )
-GPIO.output( STEP32, GPIO.LOW )
-GPIO.output( STEP33, GPIO.LOW )
-GPIO.output( STEP34, GPIO.LOW )
+GPIO.output(STEP31, GPIO.LOW)
+GPIO.output(STEP32, GPIO.LOW)
+GPIO.output(STEP33, GPIO.LOW)
+GPIO.output(STEP34, GPIO.LOW)
 
-GPIO.output( STEP41, GPIO.LOW )
-GPIO.output( STEP42, GPIO.LOW )
-GPIO.output( STEP43, GPIO.LOW )
-GPIO.output( STEP44, GPIO.LOW )
+GPIO.output(STEP41, GPIO.LOW)
+GPIO.output(STEP42, GPIO.LOW)
+GPIO.output(STEP43, GPIO.LOW)
+GPIO.output(STEP44, GPIO.LOW)
 
-GPIO.output( STEP51, GPIO.LOW )
-GPIO.output( STEP52, GPIO.LOW )
-GPIO.output( STEP53, GPIO.LOW )
-GPIO.output( STEP54, GPIO.LOW )
+GPIO.output(STEP51, GPIO.LOW)
+GPIO.output(STEP52, GPIO.LOW)
+GPIO.output(STEP53, GPIO.LOW)
+GPIO.output(STEP54, GPIO.LOW)
 
 steps1 = [STEP11, STEP12, STEP13, STEP14]
 steps2 = [STEP21, STEP22, STEP23, STEP24]
@@ -104,14 +104,19 @@ steps3 = [STEP31, STEP32, STEP33, STEP34]
 steps4 = [STEP41, STEP42, STEP43, STEP44]
 steps5 = [STEP51, STEP52, STEP53, STEP54]
 
+
 def motor_1rev(step):
+    '''This function is to control the step motor to spin 1 revolution'''
     motor_step_counter = 0
     step_pin = [steps1, steps2, steps3, steps4, steps5]
     for i in range(step_count):
-        for pin in range(0,len(step_pin[step])):
-            GPIO.output(step_pin[step][pin],step_sequence[motor_step_counter][pin])
-        motor_step_counter = (motor_step_counter-1)%8
+        for pin in range(0, len(step_pin[step])):
+            GPIO.output(step_pin[step][pin],
+                        step_sequence[motor_step_counter][pin])
+        motor_step_counter = (motor_step_counter-1) % 8
         sleep(delay)
 
-def set_led(led,state):
-    GPIO.output(led,state)
+
+def set_led(led, state):
+    '''This function is to change state of the led(on/off)'''
+    GPIO.output(led, state)
